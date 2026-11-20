@@ -1,0 +1,19 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Local Lakehouse Data & Spark Checkpoints
+data/bronze/
+data/silver/
+data/gold/
+checkpoints/
+spark-warehouse/
+derby.log
+metastore_db/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
