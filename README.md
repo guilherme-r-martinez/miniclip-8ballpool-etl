@@ -62,3 +62,14 @@ py -m src.dq.processor
 
 # Compute Gold daily_users.json and minute_kpis.json (zero-JVM Windows path)
 py -m src.gold.run_gold
+
+### 2. Kafka Producer (`src/producer/kafka_producer.py`)
+
+A reviewer can run the producer locally either in offline dry-run mode (no Kafka broker required) or against a live Kafka broker:
+
+```powershell
+# 1. Offline local dry-run (writes JSONL without a running broker)
+py -m src.producer.kafka_producer --dry-run-jsonl data/bronze/kafka_dry_run.jsonl --max-events 30
+
+# 2. Publish to a running Kafka broker
+py -m src.producer.kafka_producer --bootstrap-servers localhost:9092 --topic 8ballpool-events --max-events 80
