@@ -10,6 +10,10 @@ The purpose of this project is to demonstrate an end-to-end, modular data engine
 
 This POC provides two execution paths that produce the same Silver and Gold outputs:
 
+## Sample Data & Outputs
+
+Sample generated Bronze, Silver, and Gold files are included in the repository so reviewers can inspect the event schemas, Data Quality enrichments, and aggregated metrics (`daily_users.json` and `minute_kpis.json`) right away without having to run the pipeline first.
+
 1. **Direct Local Python Path**: Runs event generation, DQ processing, and Gold aggregations directly through standard Python modules (`src/dq/processor.py` and `src/gold/run_gold.py`).
 2. **Kafka Producer / Consumer Path**: Streams events via `src/producer/kafka_producer.py` to a Kafka topic (auto-created by the broker when enabled) and consumes them in `src/consumer/kafka_consumer.py` to apply DQ rules, write Silver JSONL, and refresh Gold outputs—with local JSONL/dry-run options when no broker is running.
 
