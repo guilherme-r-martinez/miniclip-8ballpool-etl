@@ -13,6 +13,7 @@ from pyspark.sql.types import (
 
 def event_schema() -> StructType:
     """Schema covering DQ-enriched init, match, and in-app-purchase events."""
+    # Reuse this nested schema for the post-match details of either player.
     postmatch_schema = StructType(
         [
             StructField("coin-balance-after-match", IntegerType(), nullable=False),
@@ -45,6 +46,7 @@ def event_schema() -> StructType:
 
 def with_event_time_and_platform(df: DataFrame) -> DataFrame:
     """Adds event_time timestamp, event_date, and unified uppercase platform."""
+    # Prefer the top-level platform, then fall back to either player's match details.
     unified_platform = F.upper(
         F.coalesce(
             F.col("platform"),
@@ -55,6 +57,7 @@ def with_event_time_and_platform(df: DataFrame) -> DataFrame:
     )
 
     return (
+        # Event times arrive as Unix seconds; the Spark session is configured for UTC.
         df.withColumn("event_time", F.to_timestamp(F.from_unixtime(F.col("time"))))
         .withColumn("event_date", F.to_date(F.col("event_time")))
         .withColumn("country_name", F.coalesce(F.col("country_name"), F.lit("UNKNOWN")))
@@ -95,6 +98,7 @@ def compute_minute_kpis(
     """Pro streaming metric: 1-minute window aggregations for purchases, revenue, users, and matches."""
     prepared = with_event_time_and_platform(df).withColumn(
         "active_user_id",
+        # Use the event's user ID when present; otherwise expand match participants.
         F.coalesce(
             F.col("`user-id`"),
             F.explode(
@@ -113,6 +117,7 @@ def compute_minute_kpis(
     )
 
     return (
+        # The watermark allows bounded state while accounting for events that arrive late.
         prepared.withWatermark("event_time", watermark_delay)
         .groupBy(
             F.window(F.col("event_time"), window_duration).alias("minute_window"),

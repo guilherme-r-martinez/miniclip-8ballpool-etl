@@ -24,6 +24,7 @@ def _extract_event_key(event: dict[str, Any]) -> bytes:
 
 
 def build_kafka_producer(bootstrap_servers: str, client_id: str = "miniclip-8ballpool-producer") -> KafkaProducer:
+    """Create a producer that serializes event values as UTF-8 JSON."""
     return KafkaProducer(
         bootstrap_servers=bootstrap_servers,
         client_id=client_id,
@@ -43,11 +44,13 @@ def stream_events_to_kafka(
     seed: int = 42,
     dry_run_jsonl: str | None = None,
 ) -> int:
+    """Generate events and publish them to Kafka or write them to a local JSONL file."""
     generator = EightBallPoolEventGenerator(seed=seed)
     event_stream = generator.stream_events(num_players=num_players, max_events=max_events)
 
     dry_run_file = None
     if dry_run_jsonl:
+        # A local dry run skips creating a Kafka producer or connecting to a broker.
         out_path = Path(dry_run_jsonl)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         dry_run_file = out_path.open("w", encoding="utf-8")
@@ -70,6 +73,7 @@ def stream_events_to_kafka(
                 time.sleep(interval_sec)
 
         if producer is not None:
+            # Wait for queued sends to complete before closing the producer.
             producer.flush()
     finally:
         if producer is not None:
@@ -81,6 +85,7 @@ def stream_events_to_kafka(
 
 
 def main() -> None:
+    """Parse producer options and publish or save the generated events."""
     parser = argparse.ArgumentParser(
         description="Stream simulated 8 Ball Pool events (init, match, in-app-purchase) to a Kafka topic."
     )
@@ -102,6 +107,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    # Treat a zero limit as an unbounded stream; other values cap event generation.
     limit = None if args.max_events == 0 else args.max_events
     count = stream_events_to_kafka(
         bootstrap_servers=args.bootstrap_servers,

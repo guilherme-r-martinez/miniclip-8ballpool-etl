@@ -19,6 +19,7 @@ def _set_by_path(data: dict[str, Any], path: str, value: Any) -> bool:
     """Sets a nested value if parent dicts exist; returns True if written."""
     parts = path.split(".")
     current: Any = data
+    # Do not create missing intermediate dictionaries; only update existing structure.
     for part in parts[:-1]:
         if not isinstance(current, dict) or part not in current or not isinstance(current[part], dict):
             return False
@@ -82,10 +83,12 @@ class UserCountryTracker:
     default_country: str = "UNKNOWN"
 
     def enrich_and_learn(self, event: dict[str, Any]) -> dict[str, Any]:
+        # Add the inferred country to a new top-level mapping, leaving the input unchanged.
         enriched = dict(event)
         event_type = enriched.get("event-type")
 
         if event_type == "init":
+            # Init events establish the country used to enrich later events for this user.
             user_id = str(enriched.get("user-id", ""))
             country = enriched.get("country")
             if user_id and isinstance(country, str) and country.strip():
@@ -97,6 +100,7 @@ class UserCountryTracker:
             enriched["country"] = self.user_to_country.get(user_id, self.default_country)
 
         elif event_type == "match":
+            # Match events use player A's country as the event-level country.
             user_a = str(enriched.get("user-a", ""))
             enriched["country"] = self.user_to_country.get(user_a, self.default_country)
 
@@ -116,12 +120,14 @@ class RuleEngine:
 
     def transform(self, event: dict[str, Any]) -> dict[str, Any]:
         enriched = self.country_tracker.enrich_and_learn(event)
+        # Apply configured transformations in order so later rules see prior changes.
         for rule in self.rules:
             enriched = rule.apply(enriched)
         return enriched
 
     @classmethod
     def from_config(cls, config: dict[str, Any]) -> RuleEngine:
+        # Map configuration type names to constructors for the supported rule classes.
         rule_builders = {
             "uppercase": lambda cfg: UppercaseRule(
                 name=cfg["name"],

@@ -9,6 +9,7 @@ from typing import Any
 
 
 def _extract_platform(event: dict[str, Any]) -> str:
+    """Find a platform at the event or either player's post-match level."""
     val = (
         event.get("platform")
         or (event.get("user-a-postmatch-info") or {}).get("platform")
@@ -19,6 +20,7 @@ def _extract_platform(event: dict[str, Any]) -> str:
 
 
 def _extract_users(event: dict[str, Any]) -> list[str]:
+    """Collect the event's single user and/or the two users in a match."""
     users: list[str] = []
     if event.get("user-id"):
         users.append(str(event["user-id"]))
@@ -29,7 +31,10 @@ def _extract_users(event: dict[str, Any]) -> list[str]:
 
 
 def compute_gold_from_silver(events: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    """Aggregate Silver events into daily user counts and minute-level KPIs."""
+    # Sets ensure that repeated events from the same user count only once per group.
     daily_users_map: dict[tuple[str, str, str], set[str]] = defaultdict(set)
+    # Each minute/country bucket accumulates both event counts and distinct users.
     minute_buckets: dict[tuple[str, str], dict[str, Any]] = defaultdict(
         lambda: {
             "purchase_count": 0,
@@ -42,6 +47,7 @@ def compute_gold_from_silver(events: list[dict[str, Any]]) -> dict[str, list[dic
 
     for ev in events:
         ts = int(ev.get("time", 0))
+        # Normalize event times to UTC so daily and minute groups are consistent.
         dt = datetime.fromtimestamp(ts, tz=timezone.utc)
         event_date = dt.strftime("%Y-%m-%d")
         minute_start = dt.strftime("%Y-%m-%d %H:%M:00")
@@ -53,12 +59,13 @@ def compute_gold_from_silver(events: list[dict[str, Any]]) -> dict[str, list[dic
         for u in users:
             daily_users_map[(event_date, country_name, platform_clean)].add(u)
 
-        # Minute KPIs
+        # Minute KPIs are grouped by minute and country, independent of platform.
         bucket = minute_buckets[(minute_start, country_name)]
         bucket["users"].update(users)
 
         event_type = ev.get("event-type")
         if event_type == "in-app-purchase":
+            # Missing purchase values contribute zero revenue but still count as purchases.
             amount = float(ev.get("purchase_value") or 0.0)
             bucket["purchase_count"] += 1
             bucket["total_revenue"] += amount
@@ -66,6 +73,7 @@ def compute_gold_from_silver(events: list[dict[str, Any]]) -> dict[str, list[dic
         elif event_type == "match":
             bucket["match_count"] += 1
 
+    # Sorting makes output stable across runs and independent of input order.
     daily_users = [
         {
             "event_date": d,
@@ -93,6 +101,7 @@ def compute_gold_from_silver(events: list[dict[str, Any]]) -> dict[str, list[dic
 
 
 def main() -> None:
+    """Read Silver JSONL, compute Gold aggregates, and write JSON outputs."""
     parser = argparse.ArgumentParser(description="Compute Gold outputs from Silver JSONL without JVM.")
     parser.add_argument("--input", default="data/silver/events.jsonl", help="Silver JSONL path")
     parser.add_argument("--out-dir", default="data/gold", help="Gold output directory")

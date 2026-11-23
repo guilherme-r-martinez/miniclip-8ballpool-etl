@@ -5,10 +5,7 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 
-# Local Lakehouse Data & Spark Checkpoints
-data/bronze/
-data/silver/
-data/gold/
+# Spark Checkpoints/ Data was ignored in the past, but now we want it in our repo
 checkpoints/
 spark-warehouse/
 derby.log

@@ -48,6 +48,7 @@ class EightBallPoolEventGenerator:
     )
 
     def __post_init__(self) -> None:
+        # A local RNG keeps seeded runs reproducible without changing global random state.
         self._rng = random.Random(self.seed)
         self._players: dict[str, PlayerSession] = {}
 
@@ -56,6 +57,7 @@ class EightBallPoolEventGenerator:
 
     def register_player(self, user_id: str) -> PlayerSession:
         """Creates a new player profile if not already present."""
+        # Reuse the same session so player attributes and balances persist across events.
         if user_id not in self._players:
             platform = self._rng.choice(self.platforms)
             device = self._rng.choice(self.devices_by_platform.get(platform, ["Generic Device"]))
@@ -114,9 +116,11 @@ class EightBallPoolEventGenerator:
 
         winner_player.coins += stake
         loser_player.coins = max(0, loser_player.coins - stake)
+        # Occasionally reward the winner with a level increase.
         if self._rng.random() < 0.35:
             winner_player.level += 1
 
+        # Some match events omit player B's post-match details to vary event completeness.
         include_player_b_postmatch = self._rng.random() < 0.85
         event: dict = {
             "event-type": "match",
@@ -155,7 +159,7 @@ class EightBallPoolEventGenerator:
         players = [self.register_player(pid) for pid in player_ids]
 
         emitted = 0
-        # Guarantee every active player emits 'init' first
+        # Initialize players first, unless the event limit is reached before all can emit.
         for player in players:
             if max_events is not None and emitted >= max_events:
                 return
@@ -164,7 +168,7 @@ class EightBallPoolEventGenerator:
             if sleep_seconds > 0:
                 time.sleep(sleep_seconds)
 
-        # Subsequent stream: mix of match, in-app-purchase, or re-init sessions
+        # Subsequent events are 70% matches, 22% purchases, and 8% re-initializations.
         while max_events is None or emitted < max_events:
             roll = self._rng.random()
             if roll < 0.70 and len(players) >= 2:

@@ -1,3 +1,9 @@
+"""Purpose: verify Kafka consumer input paths and their Silver/Gold outputs.
+
+The tests cover direct event processing, JSONL input through the CLI, and Kafka
+consumption through a mocked consumer without requiring a live broker.
+"""
+
 from __future__ import annotations
 
 import json
@@ -9,6 +15,7 @@ from src.producer.event_generator import EightBallPoolEventGenerator
 
 
 def _write_rules_yaml(path) -> str:
+    """Write a small DQ configuration for consumer tests and return its path."""
     rules_path = path / "dq_rules.yaml"
     rules_path.write_text(
         """
@@ -32,10 +39,12 @@ rules:
 
 
 def test_consume_and_process_events_writes_silver_and_gold(tmp_path):
+    """Check direct event processing writes all events to Silver and creates Gold outputs."""
     rules_file = _write_rules_yaml(tmp_path)
     silver_out = tmp_path / "silver" / "events.jsonl"
     gold_dir = tmp_path / "gold"
 
+    # Use a fixed seed so this test always processes the same number of generated events.
     gen = EightBallPoolEventGenerator(seed=42)
     raw_events = list(gen.stream_events(num_players=5, max_events=25))
 
@@ -63,6 +72,7 @@ def test_consume_and_process_events_writes_silver_and_gold(tmp_path):
 
 
 def test_run_consumer_with_input_jsonl_cli(tmp_path, monkeypatch):
+    """Check CLI JSONL mode honors the message limit and writes Silver and Gold files."""
     rules_file = _write_rules_yaml(tmp_path)
     input_jsonl = tmp_path / "bronze_events.jsonl"
     silver_out = tmp_path / "silver_cli.jsonl"
@@ -75,6 +85,7 @@ def test_run_consumer_with_input_jsonl_cli(tmp_path, monkeypatch):
         encoding="utf-8",
     )
 
+    # Supply CLI arguments without starting a separate process.
     monkeypatch.setattr(
         sys,
         "argv",
@@ -106,6 +117,7 @@ def test_run_consumer_with_input_jsonl_cli(tmp_path, monkeypatch):
 
 
 def test_run_consumer_with_mocked_kafka_consumer(tmp_path, monkeypatch):
+    """Check Kafka mode processes a message limit using a fake consumer, without a broker."""
     rules_file = _write_rules_yaml(tmp_path)
     silver_out = tmp_path / "silver_kafka.jsonl"
     gold_dir = tmp_path / "gold_kafka"
@@ -113,6 +125,7 @@ def test_run_consumer_with_mocked_kafka_consumer(tmp_path, monkeypatch):
     gen = EightBallPoolEventGenerator(seed=99)
     sample_events = list(gen.stream_events(num_players=3, max_events=10))
 
+    # Provide iterable messages with the same value attribute as Kafka's message objects.
     class FakeKafkaConsumer:
         def __init__(self, *topics, **kwargs):
             self.topics = topics
@@ -126,6 +139,7 @@ def test_run_consumer_with_mocked_kafka_consumer(tmp_path, monkeypatch):
         def close(self):
             self.closed = True
 
+    # Replace the real consumer factory to keep this test independent of Kafka infrastructure.
     monkeypatch.setattr(
         kafka_consumer,
         "build_kafka_consumer",

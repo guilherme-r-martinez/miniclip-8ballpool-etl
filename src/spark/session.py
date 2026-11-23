@@ -13,10 +13,12 @@ def build_spark_session(
     builder = (
         SparkSession.builder.appName(app_name)
         .master(master)
+        # Keep Spark date and timestamp operations consistent across local environments.
         .config("spark.sql.session.timeZone", "UTC")
     )
 
     if include_kafka:
+        # Load the Kafka connector only for jobs that read from or write to Kafka.
         builder = builder.config("spark.jars.packages", kafka_package)
 
     return builder.getOrCreate()

@@ -1,0 +1,30 @@
+{"event-type": "init", "time": 1795431398, "user-id": "player_0001", "country": "PT", "platform": "web"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0002", "country": "FR", "platform": "ios"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0003", "country": "US", "platform": "ios"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0004", "country": "ES", "platform": "ios"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0005", "country": "FR", "platform": "web"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0006", "country": "BR", "platform": "ios"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0007", "country": "US", "platform": "ios"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0008", "country": "DE", "platform": "ios"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0009", "country": "PT", "platform": "ios"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0010", "country": "DE", "platform": "web"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0011", "country": "US", "platform": "web"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0012", "country": "BR", "platform": "android"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0013", "country": "PT", "platform": "ios"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0014", "country": "DE", "platform": "android"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0015", "country": "US", "platform": "android"}
+{"event-type": "match", "time": 1795431398, "user-a": "player_0004", "user-b": "player_0011", "user-a-postmatch-info": {"coin-balance-after-match": 58, "level-after-match": 33, "device": "iPhone 15", "platform": "ios"}, "winner": "player_0011", "game-tier": 5, "duration": 355, "user-b-postmatch-info": {"coin-balance-after-match": 5181, "level-after-match": 6, "device": "Chrome Desktop", "platform": "web"}}
+{"event-type": "match", "time": 1795431398, "user-a": "player_0012", "user-b": "player_0004", "user-a-postmatch-info": {"coin-balance-after-match": 5265, "level-after-match": 24, "device": "OnePlus 12", "platform": "android"}, "winner": "player_0012", "game-tier": 5, "duration": 142}
+{"event-type": "match", "time": 1795431398, "user-a": "player_0014", "user-b": "player_0013", "user-a-postmatch-info": {"coin-balance-after-match": 1244, "level-after-match": 15, "device": "Samsung Galaxy S24", "platform": "android"}, "winner": "player_0014", "game-tier": 4, "duration": 167, "user-b-postmatch-info": {"coin-balance-after-match": 1949, "level-after-match": 3, "device": "iPad Air", "platform": "ios"}}
+{"event-type": "match", "time": 1795431398, "user-a": "player_0015", "user-b": "player_0010", "user-a-postmatch-info": {"coin-balance-after-match": 1424, "level-after-match": 24, "device": "Pixel 8", "platform": "android"}, "winner": "player_0010", "game-tier": 4, "duration": 103, "user-b-postmatch-info": {"coin-balance-after-match": 4171, "level-after-match": 3, "device": "Edge Desktop", "platform": "web"}}
+{"event-type": "match", "time": 1795431398, "user-a": "player_0004", "user-b": "player_0012", "user-a-postmatch-info": {"coin-balance-after-match": 0, "level-after-match": 33, "device": "iPhone 15", "platform": "ios"}, "winner": "player_0012", "game-tier": 4, "duration": 215}
+{"event-type": "match", "time": 1795431398, "user-a": "player_0003", "user-b": "player_0009", "user-a-postmatch-info": {"coin-balance-after-match": 398, "level-after-match": 3, "device": "iPad Air", "platform": "ios"}, "winner": "player_0009", "game-tier": 2, "duration": 351}
+{"event-type": "match", "time": 1795431398, "user-a": "player_0011", "user-b": "player_0007", "user-a-postmatch-info": {"coin-balance-after-match": 5428, "level-after-match": 6, "device": "Chrome Desktop", "platform": "web"}, "winner": "player_0011", "game-tier": 5, "duration": 158}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0014", "country": "DE", "platform": "android"}
+{"event-type": "init", "time": 1795431398, "user-id": "player_0011", "country": "US", "platform": "web"}
+{"event-type": "in-app-purchase", "time": 1795431398, "purchase_value": 7.99, "user-id": "player_0011", "product-id": "pool_pass_season"}
+{"event-type": "in-app-purchase", "time": 1795431398, "purchase_value": 9.99, "user-id": "player_0013", "product-id": "coins_pack_large"}
+{"event-type": "match", "time": 1795431398, "user-a": "player_0007", "user-b": "player_0003", "user-a-postmatch-info": {"coin-balance-after-match": 2228, "level-after-match": 22, "device": "iPad Air", "platform": "ios"}, "winner": "player_0003", "game-tier": 3, "duration": 286}
+{"event-type": "in-app-purchase", "time": 1795431398, "purchase_value": 1.99, "user-id": "player_0009", "product-id": "coins_pack_small"}
+{"event-type": "in-app-purchase", "time": 1795431398, "purchase_value": 7.99, "user-id": "player_0005", "product-id": "pool_pass_season"}
+{"event-type": "match", "time": 1795431398, "user-a": "player_0003", "user-b": "player_0006", "user-a-postmatch-info": {"coin-balance-after-match": 775, "level-after-match": 3, "device": "iPad Air", "platform": "ios"}, "winner": "player_0003", "game-tier": 1, "duration": 336}

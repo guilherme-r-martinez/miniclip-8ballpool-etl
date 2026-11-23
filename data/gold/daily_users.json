@@ -1,0 +1,110 @@
+[
+  {
+    "event_date": "2026-11-23",
+    "country_name": "Brazil",
+    "platform_clean": "ANDROID",
+    "distinct_users": 2
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "Brazil",
+    "platform_clean": "IOS",
+    "distinct_users": 2
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "Brazil",
+    "platform_clean": "UNKNOWN",
+    "distinct_users": 2
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "France",
+    "platform_clean": "IOS",
+    "distinct_users": 3
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "France",
+    "platform_clean": "UNKNOWN",
+    "distinct_users": 1
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "France",
+    "platform_clean": "WEB",
+    "distinct_users": 3
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "Germany",
+    "platform_clean": "ANDROID",
+    "distinct_users": 4
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "Germany",
+    "platform_clean": "IOS",
+    "distinct_users": 3
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "Germany",
+    "platform_clean": "UNKNOWN",
+    "distinct_users": 2
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "Germany",
+    "platform_clean": "WEB",
+    "distinct_users": 5
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "Portugal",
+    "platform_clean": "IOS",
+    "distinct_users": 7
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "Portugal",
+    "platform_clean": "UNKNOWN",
+    "distinct_users": 3
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "Portugal",
+    "platform_clean": "WEB",
+    "distinct_users": 3
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "Spain",
+    "platform_clean": "IOS",
+    "distinct_users": 6
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "United States",
+    "platform_clean": "ANDROID",
+    "distinct_users": 4
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "United States",
+    "platform_clean": "IOS",
+    "distinct_users": 7
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "United States",
+    "platform_clean": "UNKNOWN",
+    "distinct_users": 3
+  },
+  {
+    "event_date": "2026-11-23",
+    "country_name": "United States",
+    "platform_clean": "WEB",
+    "distinct_users": 4
+  }
+]

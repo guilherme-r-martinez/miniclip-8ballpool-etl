@@ -15,6 +15,7 @@ from src.gold.run_gold import compute_gold_from_silver
 
 
 def load_rule_engine(config_path: str = "config/dq_rules.yaml") -> RuleEngine:
+    """Load data-quality rules, checking the repository root for relative paths."""
     path = Path(config_path)
     if not path.is_absolute() and not path.exists():
         repo_root = Path(__file__).resolve().parents[2]
@@ -35,6 +36,7 @@ def build_kafka_consumer(
     auto_offset_reset: str = "earliest",
     consumer_timeout_ms: int = 1000,
 ) -> KafkaConsumer:
+    """Create a Kafka consumer that decodes each message value from JSON."""
     return KafkaConsumer(
         topic,
         bootstrap_servers=bootstrap_servers,
@@ -47,6 +49,7 @@ def build_kafka_consumer(
 
 
 def _read_existing_silver_events(silver_path: Path) -> list[dict[str, Any]]:
+    """Read prior Silver events so Gold outputs can include the full history."""
     if not silver_path.exists():
         return []
     return [
@@ -57,6 +60,7 @@ def _read_existing_silver_events(silver_path: Path) -> list[dict[str, Any]]:
 
 
 def _write_gold_outputs(gold_dir: Path, silver_events: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    """Recompute Gold aggregates and write each output as formatted JSON."""
     gold = compute_gold_from_silver(silver_events)
     gold_dir.mkdir(parents=True, exist_ok=True)
     (gold_dir / "daily_users.json").write_text(json.dumps(gold["daily_users"], indent=2), encoding="utf-8")
@@ -71,12 +75,14 @@ def consume_and_process_events(
     gold_dir: str = "data/gold",
     update_gold_every: int = 1,
 ) -> int:
+    """Apply DQ rules, append cleaned events to Silver, and refresh Gold."""
     engine = load_rule_engine(rules_config)
     silver_path = Path(silver_out)
     silver_path.parent.mkdir(parents=True, exist_ok=True)
     gold_path = Path(gold_dir)
 
     all_silver_events = _read_existing_silver_events(silver_path)
+    # Ignore non-dictionary inputs because the rule processor expects event mappings.
     valid_raw = [ev for ev in raw_events if isinstance(ev, dict)]
     cleaned_batch = process_stream(valid_raw, engine)
 
@@ -87,9 +93,11 @@ def consume_and_process_events(
             all_silver_events.append(cleaned)
             processed_count += 1
 
+            # Periodic updates limit how often aggregates are recomputed for large batches.
             if update_gold_every > 0 and processed_count % update_gold_every == 0:
                 _write_gold_outputs(gold_path, all_silver_events)
 
+    # Ensure Gold is refreshed for the final batch, including when it misses the interval.
     if processed_count > 0:
         _write_gold_outputs(gold_path, all_silver_events)
 
@@ -108,6 +116,7 @@ def run_consumer(
     poll_sleep_sec: float = 0.5,
     input_jsonl: str | None = None,
 ) -> int:
+    """Consume events from a local JSONL file or Kafka, then process them."""
     if input_jsonl:
         source_path = Path(input_jsonl)
         events = [
@@ -131,6 +140,7 @@ def run_consumer(
     )
     collected: list[dict[str, Any]] = []
     try:
+        # Iterate over configured consumer passes; kafka-python ends each pass on timeout.
         for batch_idx in range(poll_batches):
             for msg in consumer:
                 if isinstance(msg.value, dict):
@@ -144,6 +154,7 @@ def run_consumer(
     finally:
         consumer.close()
 
+    # Process after closing the broker connection so the same path handles both sources.
     return consume_and_process_events(
         raw_events=collected,
         rules_config=rules_config,
@@ -153,6 +164,7 @@ def run_consumer(
 
 
 def main() -> None:
+    """Parse command-line options and start the consumer."""
     parser = argparse.ArgumentParser(
         description="Consume 8 Ball Pool events from Kafka, apply DQ rules, write Silver, and update Gold."
     )

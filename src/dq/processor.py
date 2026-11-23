@@ -20,6 +20,7 @@ def load_rule_engine(config_path: str | Path) -> RuleEngine:
 
 def process_stream(events: Iterable[dict], engine: RuleEngine) -> list[dict]:
     """Applies DQ rules across an ordered stream of events."""
+    # Keep the input order so downstream files preserve the original event sequence.
     return [engine.transform(event) for event in events]
 
 
@@ -27,6 +28,7 @@ def write_jsonl(records: list[dict], output_path: str | Path) -> Path:
     """Writes records as newline-delimited JSON (JSONL) for Bronze/Silver inspection."""
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
+    # Replace the prior output so each run produces a self-contained snapshot.
     with path.open("w", encoding="utf-8") as f:
         for rec in records:
             f.write(json.dumps(rec) + "\n")
@@ -42,8 +44,10 @@ def run_local_simulation(
     seed: int = 42,
 ) -> None:
     """Generates simulated events, writes Bronze, applies DQ rules, and writes Silver."""
+    # A fixed seed makes local runs reproducible for debugging and comparisons.
     generator = EightBallPoolEventGenerator(seed=seed)
     raw_events = list(generator.stream_events(num_players=num_players, max_events=max_events))
+    # Bronze retains the generated input; Silver contains the same events after DQ rules.
     write_jsonl(raw_events, bronze_out)
 
     engine = load_rule_engine(rules_config)

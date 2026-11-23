@@ -1,9 +1,17 @@
+"""Purpose: verify configured DQ rules normalize platform and enrich related events.
+
+test_init_then_match_and_purchase_dq_rules checks that an init event's country is
+remembered for a later match, while top-level and nested platform values are uppercased.
+"""
+
 from src.dq.rules import RuleEngine
 
 
 def test_init_then_match_and_purchase_dq_rules():
+    """Check uppercase rules and country mapping across an init event and later match."""
     engine = RuleEngine.from_config(
         {
+            # Configure top-level and nested platform normalization plus country lookup.
             "rules": [
                 {"name": "plat", "type": "uppercase", "field": "platform"},
                 {
@@ -23,6 +31,7 @@ def test_init_then_match_and_purchase_dq_rules():
         }
     )
 
+    # The init event supplies the country the engine will remember for this user.
     init_clean = engine.transform(
         {
             "event-type": "init",
@@ -35,6 +44,7 @@ def test_init_then_match_and_purchase_dq_rules():
     assert init_clean["platform"] == "ANDROID"
     assert init_clean["country_name"] == "Portugal"
 
+    # The match omits country, so the tracker enriches it from the earlier init event.
     match_clean = engine.transform(
         {
             "event-type": "match",
@@ -52,5 +62,6 @@ def test_init_then_match_and_purchase_dq_rules():
             "duration": 140,
         }
     )
+    # Verify both inherited country mapping and normalization of the nested platform.
     assert match_clean["country_name"] == "Portugal"
     assert match_clean["user-a-postmatch-info"]["platform"] == "ANDROID"
