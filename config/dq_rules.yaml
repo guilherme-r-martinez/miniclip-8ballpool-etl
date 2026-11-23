@@ -1,0 +1,26 @@
+rules:
+  - name: uppercase_init_platform
+    type: uppercase
+    field: platform
+
+  - name: uppercase_match_user_a_platform
+    type: uppercase
+    field: user-a-postmatch-info.platform
+
+  - name: uppercase_match_user_b_platform
+    type: uppercase
+    field: user-b-postmatch-info.platform
+
+  - name: map_country_to_country_name
+    type: map_lookup
+    source_field: country
+    target_field: country_name
+    default_value: UNKNOWN
+    mapping:
+      "PT": "Portugal"
+      "ES": "Spain"
+      "GB": "United Kingdom"
+      "US": "United States"
+      "BR": "Brazil"
+      "FR": "France"
+      "DE": "Germany"

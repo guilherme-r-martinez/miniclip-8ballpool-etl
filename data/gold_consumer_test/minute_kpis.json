@@ -1,0 +1,56 @@
+[
+  {
+    "minute_start": "2026-11-23 10:56:00",
+    "country_name": "Brazil",
+    "purchase_count": 0,
+    "total_revenue": 0.0,
+    "distinct_users": 3,
+    "country_revenue": 0.0,
+    "match_count": 1
+  },
+  {
+    "minute_start": "2026-11-23 10:56:00",
+    "country_name": "France",
+    "purchase_count": 1,
+    "total_revenue": 7.99,
+    "distinct_users": 2,
+    "country_revenue": 7.99,
+    "match_count": 0
+  },
+  {
+    "minute_start": "2026-11-23 10:56:00",
+    "country_name": "Germany",
+    "purchase_count": 0,
+    "total_revenue": 0.0,
+    "distinct_users": 4,
+    "country_revenue": 0.0,
+    "match_count": 1
+  },
+  {
+    "minute_start": "2026-11-23 10:56:00",
+    "country_name": "Portugal",
+    "purchase_count": 2,
+    "total_revenue": 11.98,
+    "distinct_users": 3,
+    "country_revenue": 11.98,
+    "match_count": 0
+  },
+  {
+    "minute_start": "2026-11-23 10:56:00",
+    "country_name": "Spain",
+    "purchase_count": 0,
+    "total_revenue": 0.0,
+    "distinct_users": 3,
+    "country_revenue": 0.0,
+    "match_count": 2
+  },
+  {
+    "minute_start": "2026-11-23 10:56:00",
+    "country_name": "United States",
+    "purchase_count": 1,
+    "total_revenue": 7.99,
+    "distinct_users": 7,
+    "country_revenue": 7.99,
+    "match_count": 5
+  }
+]
